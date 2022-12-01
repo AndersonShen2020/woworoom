@@ -20,12 +20,21 @@
   text-align: left;
 }
 
-.shoppingCart-table tr {
+// .shoppingCart-table tr {
+//   border-bottom: 1px solid #b9b9b9;
+// }
+
+.shoppingCart-table tbody tr {
   border-bottom: 1px solid #b9b9b9;
 }
 
-.shoppingCart-table tr:first-child,
-.shoppingCart-table tr:last-child {
+// .shoppingCart-table thead tr:first-child,
+// .shoppingCart-table tr:last-child {
+//   border-bottom: 0;
+// }
+
+.shoppingCart-table thead tr,
+.shoppingCart-table tfoot tr {
   border-bottom: 0;
 }
 
