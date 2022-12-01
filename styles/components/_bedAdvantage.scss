@@ -1,0 +1,22 @@
+// 首頁-床墊優勢
+.bedAdvantage {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  margin-bottom: 60px;
+}
+
+.bedAdvantage-img {
+  max-height: 140px;
+  -o-object-fit: cover;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.bedAdvantage-text {
+  text-align: center;
+  font-size: 1.25rem;
+}

@@ -1,0 +1,20 @@
+// reset
+@import "./base/reset";
+
+// layout
+@import "./layout/navbar";
+
+// components
+@import "./components/banner";
+@import "./components/bedAdvantage";
+@import "./components/btn";
+@import "./components/furniture";
+@import "./components/orderInfo";
+@import "./components/productDisplay";
+@import "./components/recommendation";
+@import "./components/shoppingCart";
+@import "./components/transport";
+
+// pages
+@import "./pages/index";
+@import "./pages/admin";

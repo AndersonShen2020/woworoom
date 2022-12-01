@@ -1,0 +1,44 @@
+.orderStatus {
+  position: relative;
+}
+
+.orderStatus a {
+  position: absolute;
+  padding: 10px;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: block;
+  text-decoration: none;
+  color: #ffffff;
+}
+
+.orderStatus-unDone {
+  background-color: #747474;
+}
+
+.orderStatus-unDone:hover {
+  background-color: #000000;
+}
+
+.orderStatus-done {
+  background-color: #000000;
+}
+
+.orderStatus-done:hover {
+  background-color: #747474;
+}
+
+.orderTableWrap {
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.orderTableWrap::-webkit-scrollbar {
+  display: none;
+}
+/*# sourceMappingURL=all.css.map */

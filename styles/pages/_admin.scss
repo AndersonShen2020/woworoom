@@ -1,0 +1,18 @@
+.orderStatus a {
+  padding: 10px;
+  display: block;
+  color: #0067ce;
+}
+
+.orderTableWrap {
+  overflow-x: scroll;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.orderTableWrap::-webkit-scrollbar {
+  display: none;
+}
+/*# sourceMappingURL=all.css.map */

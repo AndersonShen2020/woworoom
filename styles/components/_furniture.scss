@@ -1,0 +1,67 @@
+// 首頁-家具比較
+.furniture-compare {
+  background-color: #f8f8f8;
+  padding: 50px 0 60px 0;
+}
+
+@media (max-width: 767px) {
+  .furniture-compare {
+    padding: 50px 15px 60px;
+  }
+}
+
+@media (max-width: 767px) {
+  .overflowWrap {
+    overflow-x: scroll;
+  }
+}
+
+.compare-table {
+  width: 65%;
+  margin: 0 auto;
+}
+
+.compare-table th,
+.compare-table td {
+  text-align: center;
+  padding: 15px 0;
+}
+
+.compare-table th {
+  font-size: 1.25rem;
+}
+
+.compare-table tr {
+  border-bottom: 1px solid #b9b9b9;
+}
+
+.compare-table tr td:first-child {
+  text-align: left;
+  font-size: 1.25rem;
+}
+
+.compare-table .material-icons {
+  color: #6a33ff;
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+@media (max-width: 767px) {
+  .compare-table {
+    width: 500px;
+  }
+  .compare-table th,
+  .compare-table td {
+    padding: 10px 0;
+  }
+  .compare-table th {
+    font-size: 1rem;
+  }
+  .compare-table tr td:first-child {
+    font-size: 1rem;
+  }
+}
+
+.text-muted {
+  color: #797979;
+}
