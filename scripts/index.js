@@ -19,10 +19,14 @@ let cartsData = [];
 
 // 產品 -  取得產品列表
 async function getProducts() {
-  const res = await api._getProducts();
-  productsData = res.data.products;
-  console.table(productsData);
-  renderProducts(productsData);
+  try {
+    const res = await api._getProducts();
+    productsData = res.data.products;
+    console.table(productsData);
+    renderProducts(productsData);
+  } catch (err) {
+    console.error(err.response.data.message);
+  }
 }
 
 // 產品 -  渲染產品列表
