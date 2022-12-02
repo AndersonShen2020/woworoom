@@ -12,4 +12,8 @@ const frontEndRequest = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// 產品
 export const _getProducts = () => frontEndRequest.get("/products");
+
+// 購物車
+export const _addCarts = (data) => frontEndRequest.post("/carts", data);

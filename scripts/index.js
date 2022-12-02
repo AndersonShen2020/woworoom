@@ -25,7 +25,7 @@ async function getProducts() {
     console.table(productsData);
     renderProducts(productsData);
   } catch (err) {
-    console.error(err.response.data.message);
+    console.error(err?.response?.data?.message);
   }
 }
 
@@ -33,7 +33,7 @@ async function getProducts() {
 function renderProducts(products) {
   let result = ``;
   products.forEach((item) => {
-    result += `<li class="productCard">
+    result += `<li class="productCard" data-title="${item.title}">
     <h4 class="productType">${item.category}</h4>
     <img
       src=${item.images}
@@ -46,6 +46,22 @@ function renderProducts(products) {
   </li>`;
   });
   productWrap.innerHTML = result;
+
+  // 綁定加入購物車按鈕
+  const addCardBtn = document.querySelectorAll(".addCardBtn");
+  addCardBtn.forEach((item) => {
+    // 綁定
+    item.addEventListener("click", (e) => {
+      let productId = "";
+      // 找出產品 ID
+      productsData.forEach((item) => {
+        if (item.title === e.target.closest("li").dataset.title) {
+          productId = item.id;
+        }
+      });
+      addCarts(productId);
+    });
+  });
 }
 
 // 產品 - 顯示 select 下拉選單選項
@@ -63,6 +79,23 @@ function filterProducts(category) {
 }
 
 // 產品 - 新增產品到購物車
+async function addCarts(productId, productNum = 3) {
+  let data = {
+    data: {
+      productId: productId,
+      quantity: productNum,
+    },
+  };
+  // 打 API(加入購物車)
+  try {
+    const result = await api._addCarts(data);
+    cartsData = result.data.carts;
+    console.table(cartsData);
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
 // 購物車 - 取得購物車列表
 // 購物車 - 顯示購物車列表
 // 購物車 - 新增產品
