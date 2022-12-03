@@ -740,6 +740,11 @@ body {
   max-width: 80px;
 }
 
+.shoppingCart-num {
+  font-size: 1.25rem;
+  max-width: 80px;
+}
+
 .discardBtn {
   text-align: right;
 }

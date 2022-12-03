@@ -1,4 +1,5 @@
 import * as api from "./api.js";
+import { debounce } from "https://cdn.jsdelivr.net/npm/lodash-es@4.17.21/lodash.min.js";
 
 // DOM
 // 產品列表
@@ -79,7 +80,7 @@ function filterProducts(category) {
 }
 
 // 產品 - 新增產品到購物車
-async function addCarts(productId, productNum = 3) {
+async function addCarts(productId, productNum = 1) {
   let data = {
     data: {
       productId: productId,
@@ -88,11 +89,13 @@ async function addCarts(productId, productNum = 3) {
   };
   // 打 API(加入購物車)
   try {
-    const result = await api._addCarts(data);
-    cartsData = result.data.carts;
-    console.table(cartsData);
+    let result = await api._addCarts(data);
+    cartsData = result.data;
+    // console.table(cartsData);
+    console.log(cartsData);
+    renderCarts();
   } catch (err) {
-    console.error(err?.response?.data?.message);
+    console.error(err);
   }
 }
 
@@ -113,7 +116,7 @@ async function getCarts() {
 function renderCarts() {
   let result = ``;
   cartsData.carts.forEach((item) => {
-    result += `<tr>
+    result += `<tr data-title="${item.product.title}">
     <td>
       <div class="cardItem-title">
         <img src="${item.product.images}" alt="" />
@@ -121,7 +124,9 @@ function renderCarts() {
       </div>
     </td>
     <td>NT$ ${item.product.price}</td>
-    <td>${item.quantity}</td>
+    <td>
+      <input class="shoppingCart-num" type="number" min="1" value="${item.quantity}" />
+    </td>
     <td>NT$ ${item.product.price * item.quantity}</td>
     <td class="discardBtn">
       <a href="#" class="material-icons"> clear </a>
@@ -129,13 +134,46 @@ function renderCarts() {
   </tr>`;
   });
   cartsList.innerHTML = result;
+
   const totalCartsCost = document.querySelector("#totalCartsCost");
   totalCartsCost.innerHTML = `NT$ ${cartsData.finalTotal}`;
+
+  const shoppingCartNum = document.querySelectorAll(".shoppingCart-num");
+  shoppingCartNum.forEach((item) => {
+    item.addEventListener("change", debounce(patchCarts, 500));
+  });
 }
 
 // 購物車 - 新增產品
 // 購物車 - 功能整合(單筆刪除、修改數量)
 // 購物車 - 修改數量
+async function patchCarts(e) {
+  const title = e.target.closest("tr").dataset.title;
+  const num = parseInt(e.target.value);
+  let id = "";
+
+  cartsData.carts.forEach((item) => {
+    if (item.product.title === title) {
+      id = item.id;
+    }
+  });
+
+  let data = {
+    data: {
+      id,
+      quantity: num,
+    },
+  };
+  console.log(data);
+  try {
+    let result = await api._patchCarts(data);
+    cartsData = result.data;
+    renderCarts();
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
 // 購物車 - 單筆刪除
 // 購物車 - 清空購物車
 // 表單 - 驗證功能
