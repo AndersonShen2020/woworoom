@@ -97,7 +97,42 @@ async function addCarts(productId, productNum = 3) {
 }
 
 // 購物車 - 取得購物車列表
-// 購物車 - 顯示購物車列表
+async function getCarts() {
+  try {
+    let { data } = await api._getCarts();
+    cartsData = data;
+    // console.table(cartsData);
+    console.log(cartsData);
+    renderCarts();
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
+// 購物車 - 渲染購物車列表
+function renderCarts() {
+  let result = ``;
+  cartsData.carts.forEach((item) => {
+    result += `<tr>
+    <td>
+      <div class="cardItem-title">
+        <img src="${item.product.images}" alt="" />
+        <p>${item.product.title}</p>
+      </div>
+    </td>
+    <td>NT$ ${item.product.price}</td>
+    <td>${item.quantity}</td>
+    <td>NT$ ${item.product.price * item.quantity}</td>
+    <td class="discardBtn">
+      <a href="#" class="material-icons"> clear </a>
+    </td>
+  </tr>`;
+  });
+  cartsList.innerHTML = result;
+  const totalCartsCost = document.querySelector("#totalCartsCost");
+  totalCartsCost.innerHTML = `NT$ ${cartsData.finalTotal}`;
+}
+
 // 購物車 - 新增產品
 // 購物車 - 功能整合(單筆刪除、修改數量)
 // 購物車 - 修改數量
@@ -110,6 +145,7 @@ async function addCarts(productId, productNum = 3) {
 // 初始化
 async function init() {
   await getProducts();
+  await getCarts();
 }
 
 init();
