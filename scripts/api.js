@@ -17,5 +17,6 @@ export const _getProducts = () => frontEndRequest.get("/products");
 
 // 購物車
 export const _getCarts = () => frontEndRequest.get("/carts");
-export const _addCarts = (data) => frontEndRequest.post("/carts", data);
-export const _patchCarts = (data) => frontEndRequest.patch("/carts", data);
+export const _addCart = (data) => frontEndRequest.post("/carts", data);
+export const _patchCart = (data) => frontEndRequest.patch("/carts", data);
+export const _deleteCart = (id) => frontEndRequest.delete(`/carts/${id}`);

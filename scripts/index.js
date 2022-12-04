@@ -89,7 +89,7 @@ async function addCarts(productId, productNum = 1) {
   };
   // 打 API(加入購物車)
   try {
-    let result = await api._addCarts(data);
+    let result = await api._addCart(data);
     cartsData = result.data;
     // console.table(cartsData);
     console.log(cartsData);
@@ -129,7 +129,7 @@ function renderCarts() {
     </td>
     <td>NT$ ${item.product.price * item.quantity}</td>
     <td class="discardBtn">
-      <a href="#" class="material-icons"> clear </a>
+      <a href="#" class="material-icons" id="deleteCartItem"> clear </a>
     </td>
   </tr>`;
   });
@@ -142,10 +142,13 @@ function renderCarts() {
   shoppingCartNum.forEach((item) => {
     item.addEventListener("change", debounce(patchCarts, 500));
   });
+
+  const deleteCartItem = document.querySelectorAll("#deleteCartItem");
+  deleteCartItem.forEach((item) => {
+    item.addEventListener("click", deleteCart);
+  });
 }
 
-// 購物車 - 新增產品
-// 購物車 - 功能整合(單筆刪除、修改數量)
 // 購物車 - 修改數量
 async function patchCarts(e) {
   const title = e.target.closest("tr").dataset.title;
@@ -166,7 +169,7 @@ async function patchCarts(e) {
   };
   console.log(data);
   try {
-    let result = await api._patchCarts(data);
+    let result = await api._patchCart(data);
     cartsData = result.data;
     renderCarts();
   } catch (err) {
@@ -175,6 +178,25 @@ async function patchCarts(e) {
 }
 
 // 購物車 - 單筆刪除
+async function deleteCart(e) {
+  const title = e.target.closest("tr").dataset.title;
+  let id = "";
+
+  cartsData.carts.forEach((item) => {
+    if (item.product.title === title) {
+      id = item.id;
+    }
+  });
+
+  try {
+    let result = await api._deleteCart(id);
+    cartsData = result.data;
+    renderCarts();
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
 // 購物車 - 清空購物車
 // 表單 - 驗證功能
 // validate 套件的驗證規則
