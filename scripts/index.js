@@ -198,6 +198,16 @@ async function deleteCart(e) {
 }
 
 // 購物車 - 清空購物車
+deleteCartsBtn.addEventListener("click", async () => {
+  try {
+    let result = await api._deleteAllCart();
+    cartsData = result.data;
+    renderCarts();
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+});
+
 // 表單 - 驗證功能
 // validate 套件的驗證規則
 // 表單 -  驗證錯誤提示訊息
