@@ -20,4 +20,7 @@ export const _getCarts = () => frontEndRequest.get("/carts");
 export const _addCart = (data) => frontEndRequest.post("/carts", data);
 export const _patchCart = (data) => frontEndRequest.patch("/carts", data);
 export const _deleteCart = (id) => frontEndRequest.delete(`/carts/${id}`);
-export const _deleteAllCart = () => frontEndRequest.delete(`/carts/`);
+export const _deleteAllCart = () => frontEndRequest.delete(`/carts`);
+
+// 前台訂單
+export const _postOrders = (data) => frontEndRequest.post(`/orders`, data);

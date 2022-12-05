@@ -13,6 +13,14 @@ const deleteCartsBtn = document.querySelector(".discardAllBtn");
 // 表單
 const orderInfoForm = document.querySelector(".orderInfo-form");
 const orderInfoBtn = document.querySelector(".orderInfo-btn");
+// 找出所有的 form 輸入欄位(要驗證的欄位)
+const inputs = orderInfoForm.querySelectorAll("input[type=text],input[type=tel],input[type=email]");
+// 所有表單 inupt
+const customerName = document.querySelector("#customerName");
+const customerPhone = document.querySelector("#customerPhone");
+const customerEmail = document.querySelector("#customerEmail");
+const customerAddress = document.querySelector("#customerAddress");
+const tradeWay = document.querySelector("#tradeWay");
 
 // validate 套件的驗證規則
 const constraints = {
@@ -249,25 +257,27 @@ deleteCartsBtn.addEventListener("click", async () => {
 // 表單 - 驗證功能
 
 function formVerify() {
-  // 找出所有的 form 輸入欄位(要驗證的欄位)
-  const inputs = orderInfoForm.querySelectorAll(
-    "input[type=text],input[type=tel],input[type=email]"
-  );
   // 將所有錯誤訊息清除歸零
   inputs.forEach((input) => {
     input.nextElementSibling.textContent = "";
   });
 
   // 按下 submit 時要進行驗證
-  orderInfoForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+  orderInfoForm.addEventListener("submit", (e) => formCheck(e));
+}
 
-    // 驗證回傳的內容
-    let errors = validate(orderInfoForm, constraints);
-    console.log(errors);
+// 表單 - 驗證錯誤提示訊息
+function formCheck(e) {
+  e.preventDefault();
 
-    // 找出對應的錯誤訊息
+  // 驗證回傳的內容
+  let errors = validate(orderInfoForm, constraints);
+
+  // 購物車中有沒有東西
+  if (cartsData.carts.length !== 0) {
     if (errors) {
+      // 有錯誤，找出對應的錯誤並渲染到畫面上
+
       // 將所有錯誤訊息清除歸零
       inputs.forEach((input) => {
         input.nextElementSibling.textContent = "";
@@ -275,17 +285,41 @@ function formVerify() {
 
       // 列出所有 errors 中的 key 值
       let errorKeys = Object.keys(errors);
-      console.log(errorKeys);
       errorKeys.forEach((key) => {
         // 渲染到畫面上
         document.querySelector(`[data-message=${key}]`).textContent = errors[key];
       });
+    } else {
+      // 沒有錯誤，將訂單送到後端
+      sendOrder();
     }
-  });
+  }
 }
 
-// 表單 - 驗證錯誤提示訊息
 // 表單 - 送出購買訂單
+async function sendOrder() {
+  // 要送出去的訂單資料
+  const data = {
+    data: {
+      user: {
+        name: customerName.value,
+        tel: customerPhone.value,
+        email: customerEmail.value,
+        address: customerAddress.value,
+        payment: tradeWay.value,
+      },
+    },
+  };
+  try {
+    let result = await api._postOrders(data);
+    cartsData = result.data;
+    getCarts();
+    orderInfoForm.reset();
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
 // 初始化
 async function init() {
   await getProducts();
