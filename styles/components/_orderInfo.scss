@@ -27,17 +27,20 @@
 }
 
 .orderInfo-inputWrap {
-  position: relative;
+  // position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .orderInfo-message {
-  position: absolute;
+  // position: absolute;
   white-space: nowrap;
-  left: 103%;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-  transform: translateY(-50%);
+  // left: 103%;
+  // top: 50%;
+  // -webkit-transform: translateY(-50%);
+  // transform: translateY(-50%);
   color: #c72424;
+  margin-top: 0.25rem;
 }
 
 @media (max-width: 767px) {

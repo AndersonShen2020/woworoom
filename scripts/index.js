@@ -14,6 +14,44 @@ const deleteCartsBtn = document.querySelector(".discardAllBtn");
 const orderInfoForm = document.querySelector(".orderInfo-form");
 const orderInfoBtn = document.querySelector(".orderInfo-btn");
 
+// validate 套件的驗證規則
+const constraints = {
+  姓名: {
+    presence: {
+      message: "是必填的欄位",
+    },
+  },
+  電話: {
+    presence: {
+      message: "是必填的欄位",
+    },
+    format: {
+      pattern: /^09\d{8}$/,
+      message: "號碼開頭需為 09",
+    },
+    length: {
+      is: 10,
+      message: "長度須為10碼",
+    },
+  },
+  信箱: {
+    presence: {
+      message: "是必填的欄位",
+    },
+    email: true,
+  },
+  寄送地址: {
+    presence: {
+      message: "是必填欄位",
+    },
+  },
+  交易方式: {
+    presence: {
+      message: "是必填欄位",
+    },
+  },
+};
+
 // 儲存遠端資料
 let productsData = [];
 let cartsData = [];
@@ -209,13 +247,50 @@ deleteCartsBtn.addEventListener("click", async () => {
 });
 
 // 表單 - 驗證功能
-// validate 套件的驗證規則
-// 表單 -  驗證錯誤提示訊息
+
+function formVerify() {
+  // 找出所有的 form 輸入欄位(要驗證的欄位)
+  const inputs = orderInfoForm.querySelectorAll(
+    "input[type=text],input[type=tel],input[type=email]"
+  );
+  // 將所有錯誤訊息清除歸零
+  inputs.forEach((input) => {
+    input.nextElementSibling.textContent = "";
+  });
+
+  // 按下 submit 時要進行驗證
+  orderInfoForm.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // 驗證回傳的內容
+    let errors = validate(orderInfoForm, constraints);
+    console.log(errors);
+
+    // 找出對應的錯誤訊息
+    if (errors) {
+      // 將所有錯誤訊息清除歸零
+      inputs.forEach((input) => {
+        input.nextElementSibling.textContent = "";
+      });
+
+      // 列出所有 errors 中的 key 值
+      let errorKeys = Object.keys(errors);
+      console.log(errorKeys);
+      errorKeys.forEach((key) => {
+        // 渲染到畫面上
+        document.querySelector(`[data-message=${key}]`).textContent = errors[key];
+      });
+    }
+  });
+}
+
+// 表單 - 驗證錯誤提示訊息
 // 表單 - 送出購買訂單
 // 初始化
 async function init() {
   await getProducts();
   await getCarts();
+  formVerify();
 }
 
 init();
