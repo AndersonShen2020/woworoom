@@ -4,11 +4,15 @@ import "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js";
 // api
 const base_url = "https://livejs-api.hexschool.io/api/livejs/v1";
 
+// api path
+const api_path = "ashen";
+
 // api token
 const api_token = "v0Lk6ZZjcpWXjTVTXuQVFCquH0u1";
 
+// 前台
 const frontEndRequest = axios.create({
-  baseURL: `${base_url}/customer/ashen`,
+  baseURL: `${base_url}/customer/${api_path}`,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -24,3 +28,15 @@ export const _deleteAllCart = () => frontEndRequest.delete(`/carts`);
 
 // 前台訂單
 export const _postOrders = (data) => frontEndRequest.post(`/orders`, data);
+
+// 後台
+const BackEndRequest = axios.create({
+  baseURL: `${base_url}/admin/${api_path}`,
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: api_token,
+  },
+});
+
+// 後台訂單
+export const _getOrders = (data) => BackEndRequest.get(`/orders`, data);

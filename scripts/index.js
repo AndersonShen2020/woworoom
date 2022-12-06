@@ -15,7 +15,7 @@ const orderInfoForm = document.querySelector(".orderInfo-form");
 const orderInfoBtn = document.querySelector(".orderInfo-btn");
 // 找出所有的 form 輸入欄位(要驗證的欄位)
 const inputs = orderInfoForm.querySelectorAll("input[type=text],input[type=tel],input[type=email]");
-// 所有表單 inupt
+// 所有表單 input
 const customerName = document.querySelector("#customerName");
 const customerPhone = document.querySelector("#customerPhone");
 const customerEmail = document.querySelector("#customerEmail");
