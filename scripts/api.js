@@ -40,3 +40,5 @@ const BackEndRequest = axios.create({
 
 // 後台訂單
 export const _getOrders = (data) => BackEndRequest.get(`/orders`, data);
+export const _putOrder = (data) => BackEndRequest.put(`/orders`, data);
+export const _deleteOrder = (id) => BackEndRequest.delete(`/orders/${id}`);

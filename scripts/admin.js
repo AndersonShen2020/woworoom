@@ -5,12 +5,17 @@ const orderList = document.querySelector("#orderList");
 
 // 訂單 - 獲取訂單
 function getOrders() {
-  api._getOrders().then((res) => {
-    let orders = res.data.orders;
-    console.log(orders);
-    renderOrders(orders);
-    calOrders(orders);
-  });
+  api
+    ._getOrders()
+    .then((res) => {
+      let orders = res.data.orders;
+      console.log(orders);
+      renderOrders(orders);
+      calOrders(orders);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
 }
 
 // 表格渲染
@@ -38,7 +43,7 @@ function renderOrders(orders) {
         </td>
         <td>${time.getFullYear()}/${time.getMonth()}/${time.getDay()}</td>
         <td class="orderStatus">
-          <a href="#">未處理</a>
+          <a href="#" id="changeState">${order.paid ? "已處理" : "未處理"}</a>
         </td>
         <td>
           <input type="button" class="delSingleOrder-Btn" value="刪除" />
@@ -47,10 +52,56 @@ function renderOrders(orders) {
     `;
   });
   orderList.innerHTML = result;
+
+  // 切換訂單狀態
+  const changeStateList = document.querySelectorAll("#changeState");
+  changeStateList.forEach((changeStateItem) => {
+    changeStateItem.addEventListener("click", (e) => {
+      e.preventDefault();
+      const orderId = e.target.closest("tr").cells[0].innerText;
+      const state = e.target.closest("tr").cells[6].innerText === "未處理" ? false : true;
+      changeOrderState(orderId, state);
+    });
+  });
+
+  // 刪除特定訂單
+  const delSingleOrder = document.querySelectorAll(".delSingleOrder-Btn");
+  delSingleOrder.forEach((delSingleOrderItem) => {
+    delSingleOrderItem.addEventListener("click", (e) => {
+      e.preventDefault();
+      const orderId = e.target.closest("tr").cells[0].innerText;
+      deleteOrder(orderId);
+    });
+  });
 }
 
 // 表格操作 - 訂單狀態切換
+async function changeOrderState(orderId, state) {
+  let data = {
+    data: {
+      id: orderId,
+      paid: !state,
+    },
+  };
+  try {
+    let res = await api._putOrder(data);
+    let orders = res.data.orders;
+    renderOrders(orders);
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
+
 // 表格操作 - 刪除單筆
+async function deleteOrder(orderId) {
+  try {
+    let res = await api._deleteOrder(orderId);
+    let orders = res.data.orders;
+    renderOrders(orders);
+  } catch (err) {
+    console.error(err?.response?.data?.message);
+  }
+}
 // 表格操作 - 刪除所有項目
 
 // 訂單排列計算 - 篩選出前三名營收品項，其他 4~8 名都統整為「其它」
