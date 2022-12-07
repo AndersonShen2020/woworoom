@@ -26,7 +26,7 @@ async function getOrders(state = "title") {
       orderSortWithCategory(orders);
     }
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 }
 
@@ -57,7 +57,9 @@ function renderOrdersList(orders) {
         </td>
         <td>${time.getFullYear()}/${time.getMonth()}/${time.getDay()}</td>
         <td class="orderStatus">
-          <a href="#" id="changeState">${order.paid ? "已處理" : "未處理"}</a>
+          <a href="#" id="changeState" style="${order.paid ? "" : "color:red"}">${
+      order.paid ? "已處理" : "未處理"
+    }</a>
         </td>
         <td>
           <input type="button" class="delSingleOrder-Btn" value="刪除" />
@@ -130,7 +132,7 @@ deleteAllOrders.addEventListener("click", (e) => {
       orderSortWithTitle(orders);
     })
     .catch((err) => {
-      console.log(err);
+      console.error(err);
     });
 });
 
@@ -191,7 +193,6 @@ function orderSortWithTitle(orders) {
 
     // 排序
     c3Data.sort((x, y) => y[1] - x[1]);
-    console.log(c3Data);
 
     // 將 4~8 統整為「其它」並計算總數
     if (c3Data.length > 3) {
