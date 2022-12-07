@@ -42,3 +42,4 @@ const BackEndRequest = axios.create({
 export const _getOrders = (data) => BackEndRequest.get(`/orders`, data);
 export const _putOrder = (data) => BackEndRequest.put(`/orders`, data);
 export const _deleteOrder = (id) => BackEndRequest.delete(`/orders/${id}`);
+export const _deleteOrders = () => BackEndRequest.delete(`/orders`);
