@@ -1,4 +1,5 @@
 import * as api from "./api.js";
+import { isLoading } from "./common/loading.js";
 import { debounce } from "https://cdn.jsdelivr.net/npm/lodash-es@4.17.21/lodash.min.js";
 
 // DOM
@@ -78,6 +79,7 @@ async function getProducts() {
 
 // 產品 -  渲染產品列表
 function renderProducts(products) {
+  isLoading(true);
   let result = ``;
   products.forEach((item) => {
     result += `<li class="productCard" data-title="${item.title}">
@@ -110,6 +112,7 @@ function renderProducts(products) {
       addCarts(productId);
     });
   });
+  isLoading(false);
 }
 
 // 產品 - 顯示 select 下拉選單選項
@@ -161,6 +164,8 @@ async function getCarts() {
 
 // 購物車 - 渲染購物車列表
 function renderCarts() {
+  isLoading(true);
+
   let result = ``;
   cartsData.carts.forEach((item) => {
     result += `<tr data-title="${item.product.title}">
@@ -197,6 +202,8 @@ function renderCarts() {
       deleteCart(e);
     });
   });
+
+  isLoading(false);
 }
 
 // 購物車 - 修改數量

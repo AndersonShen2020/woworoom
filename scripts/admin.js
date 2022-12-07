@@ -1,4 +1,5 @@
 import * as api from "./api.js";
+import { isLoading } from "./common/loading.js";
 
 // DOM
 const orderList = document.querySelector("#orderList");
@@ -21,6 +22,8 @@ function getOrders() {
 
 // 表格渲染
 function renderOrders(orders) {
+  isLoading(true);
+
   let result = ``;
   orders.forEach((order) => {
     let time = new Date(order.createdAt * 1000);
@@ -74,6 +77,8 @@ function renderOrders(orders) {
       deleteOrder(orderId);
     });
   });
+
+  isLoading(false);
 }
 
 // 表格操作 - 訂單狀態切換
@@ -103,6 +108,7 @@ async function deleteOrder(orderId) {
     console.error(err?.response?.data?.message);
   }
 }
+
 // 表格操作 - 刪除所有項目
 discardAllBtn.addEventListener("click", (e) => {
   e.preventDefault();

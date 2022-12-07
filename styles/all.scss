@@ -4,6 +4,9 @@
 // layout
 @import "./layout/navbar";
 
+// util
+@import "./components/util";
+
 // components
 @import "./components/banner";
 @import "./components/bedAdvantage";
@@ -14,6 +17,7 @@
 @import "./components/recommendation";
 @import "./components/shoppingCart";
 @import "./components/transport";
+@import "./components/loading";
 
 // pages
 @import "./pages/index";
