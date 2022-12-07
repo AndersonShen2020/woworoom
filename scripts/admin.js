@@ -3,25 +3,35 @@ import { isLoading } from "./common/loading.js";
 
 // DOM
 const orderList = document.querySelector("#orderList");
-const discardAllBtn = document.querySelector(".discardAllBtn");
+const deleteAllOrders = document.querySelector("#deleteAllOrders");
+const orderCategory = document.querySelector("#orderCategory");
+const orderTitle = document.querySelector("#orderTitle");
+const orderChartTitle = document.querySelector(".section-title");
+
+orderCategory.addEventListener("click", (e) => getOrders("category"));
+orderTitle.addEventListener("click", (e) => getOrders("title"));
 
 // 訂單 - 獲取訂單
-function getOrders() {
-  api
-    ._getOrders()
-    .then((res) => {
-      let orders = res.data.orders;
-      console.log(orders);
-      renderOrders(orders);
-      calOrders(orders);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
+async function getOrders(state = "title") {
+  try {
+    let res = await api._getOrders();
+    let orders = res.data.orders;
+    renderOrdersList(orders);
+
+    if (state === "title") {
+      orderChartTitle.innerText = "全品項營收比重";
+      orderSortWithTitle(orders);
+    } else if (state === "category") {
+      orderChartTitle.innerText = "全產品類別營收比重";
+      orderSortWithCategory(orders);
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 // 表格渲染
-function renderOrders(orders) {
+function renderOrdersList(orders) {
   isLoading(true);
 
   let result = ``;
@@ -92,7 +102,7 @@ async function changeOrderState(orderId, state) {
   try {
     let res = await api._putOrder(data);
     let orders = res.data.orders;
-    renderOrders(orders);
+    renderOrdersList(orders);
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
@@ -103,31 +113,60 @@ async function deleteOrder(orderId) {
   try {
     let res = await api._deleteOrder(orderId);
     let orders = res.data.orders;
-    renderOrders(orders);
+    renderOrdersList(orders);
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
 }
 
 // 表格操作 - 刪除所有項目
-discardAllBtn.addEventListener("click", (e) => {
+deleteAllOrders.addEventListener("click", (e) => {
   e.preventDefault();
   api
     ._deleteOrders()
     .then((res) => {
       let orders = res.data.orders;
-      console.log(orders);
-      renderOrders(orders);
-      calOrders(orders);
+      renderOrdersList(orders);
+      orderSortWithTitle(orders);
     })
     .catch((err) => {
       console.log(err);
     });
 });
 
-// 訂單排列計算 - 篩選出前三名營收品項，其他 4~8 名都統整為「其它」
+// 全產品類別營收比重 - 類別含三項，共有：床架、收納、窗簾
 // C3 要的資料 => [["Louvre 雙人床架", 1],["Antony 雙人床架", 2],["Anty 雙人床架", 3],["其他", 4],]
-function calOrders(orders) {
+function orderSortWithCategory(orders) {
+  // 資料存放
+  let temp = {};
+  let c3Data = [];
+
+  if (orders.length) {
+    // 計算每個項目的數量
+    orders.forEach((order) => {
+      order.products.forEach(({ category, quantity }) => {
+        if (temp[category]) {
+          temp[category] += quantity;
+        } else {
+          temp[category] = 0;
+          temp[category] += quantity;
+        }
+      });
+    });
+
+    // 轉換成 C3 資料格式
+    Object.keys(temp).forEach((key) => {
+      c3Data.push([key, temp[key]]);
+    });
+
+    // 資料送去渲染
+    chartGenerate(c3Data);
+  }
+}
+
+// 全品項營收比重 - 篩選出前三名營收品項，其他 4~8 名都統整為「其它」
+// C3 要的資料 => [["Louvre 雙人床架", 1],["Antony 雙人床架", 2],["Anty 雙人床架", 3],["其他", 4],]
+function orderSortWithTitle(orders) {
   // 資料存放
   let temp = {};
   let c3Data = [];
@@ -146,24 +185,21 @@ function calOrders(orders) {
     });
 
     // 轉換成 C3 資料格式
-    console.log(temp);
     Object.keys(temp).forEach((key) => {
       c3Data.push([key, temp[key]]);
     });
-    console.log(c3Data);
 
     // 排序
     c3Data.sort((x, y) => y[1] - x[1]);
     console.log(c3Data);
 
     // 將 4~8 統整為「其它」並計算總數
-    console.log(c3Data.length);
     if (c3Data.length > 3) {
       let newData = ["其他", 0];
       for (let i = 3; i < c3Data.length; i++) {
         newData[1] += c3Data[i][1];
       }
-      console.log(newData);
+
       c3Data = c3Data.slice(0, 3);
       c3Data.push(newData);
     }
@@ -189,8 +225,8 @@ function chartGenerate(c3Data) {
   }
 }
 
-function init() {
-  getOrders();
+async function init() {
+  await getOrders();
 }
 
 init();
