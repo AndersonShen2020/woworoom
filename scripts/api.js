@@ -10,10 +10,12 @@ const api_path = "ashen";
 // api token
 const api_token = "v0Lk6ZZjcpWXjTVTXuQVFCquH0u1";
 
+const contentType = { "Content-Type": "application/json" };
+
 // 前台
 const frontEndRequest = axios.create({
   baseURL: `${base_url}/customer/${api_path}`,
-  headers: { "Content-Type": "application/json" },
+  headers: contentType,
 });
 
 // 產品
@@ -33,7 +35,7 @@ export const _postOrders = (data) => frontEndRequest.post(`/orders`, data);
 const BackEndRequest = axios.create({
   baseURL: `${base_url}/admin/${api_path}`,
   headers: {
-    "Content-Type": "application/json",
+    ...contentType,
     Authorization: api_token,
   },
 });
