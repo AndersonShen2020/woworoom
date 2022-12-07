@@ -104,7 +104,8 @@ async function deleteOrder(orderId) {
   }
 }
 // 表格操作 - 刪除所有項目
-discardAllBtn.addEventListener("click", () => {
+discardAllBtn.addEventListener("click", (e) => {
+  e.preventDefault();
   api
     ._deleteOrders()
     .then((res) => {

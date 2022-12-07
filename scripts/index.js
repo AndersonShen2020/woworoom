@@ -99,6 +99,7 @@ function renderProducts(products) {
   addCardBtn.forEach((item) => {
     // 綁定
     item.addEventListener("click", (e) => {
+      e.preventDefault();
       let productId = "";
       // 找出產品 ID
       productsData.forEach((item) => {
@@ -191,12 +192,16 @@ function renderCarts() {
 
   const deleteCartItem = document.querySelectorAll("#deleteCartItem");
   deleteCartItem.forEach((item) => {
-    item.addEventListener("click", deleteCart);
+    item.addEventListener("click", (e) => {
+      e.preventDefault();
+      deleteCart(e);
+    });
   });
 }
 
 // 購物車 - 修改數量
 async function patchCarts(e) {
+  e.preventDefault();
   const title = e.target.closest("tr").dataset.title;
   const num = parseInt(e.target.value);
   let id = "";
@@ -244,7 +249,8 @@ async function deleteCart(e) {
 }
 
 // 購物車 - 清空購物車
-deleteCartsBtn.addEventListener("click", async () => {
+deleteCartsBtn.addEventListener("click", async (e) => {
+  e.preventDefault();
   try {
     let result = await api._deleteAllCart();
     cartsData = result.data;
@@ -314,6 +320,9 @@ async function sendOrder() {
     let result = await api._postOrders(data);
     cartsData = result.data;
     getCarts();
+    inputs.forEach((input) => {
+      input.nextElementSibling.textContent = "";
+    });
     orderInfoForm.reset();
   } catch (err) {
     console.error(err?.response?.data?.message);
