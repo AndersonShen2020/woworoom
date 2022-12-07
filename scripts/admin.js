@@ -1,15 +1,53 @@
 import * as api from "./api.js";
 
+// DOM
+const orderList = document.querySelector("#orderList");
+
 // 訂單 - 獲取訂單
 function getOrders() {
   api._getOrders().then((res) => {
     let orders = res.data.orders;
     console.log(orders);
+    renderOrders(orders);
     calOrders(orders);
   });
 }
 
 // 表格渲染
+function renderOrders(orders) {
+  let result = ``;
+  orders.forEach((order) => {
+    let time = new Date(order.createdAt * 1000);
+    result += `
+    <tr>
+      <td>${order.id}</td>
+      <td>
+        <p>${order.user.name}</p>
+        <p>${order.user.tel}</p>
+      </td>
+      <td>${order.user.address}</td>
+      <td>${order.user.email}</td>
+      <td>
+      `;
+
+    order.products.forEach((product) => {
+      result += `<p>${product.title} x ${product.quantity}</ p>`;
+    });
+
+    result += `
+        </td>
+        <td>${time.getFullYear()}/${time.getMonth()}/${time.getDay()}</td>
+        <td class="orderStatus">
+          <a href="#">未處理</a>
+        </td>
+        <td>
+          <input type="button" class="delSingleOrder-Btn" value="刪除" />
+        </td>
+      </tr>
+    `;
+  });
+  orderList.innerHTML = result;
+}
 
 // 表格操作 - 訂單狀態切換
 // 表格操作 - 刪除單筆
