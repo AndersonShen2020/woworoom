@@ -70,7 +70,6 @@ async function getProducts() {
   try {
     const res = await api._getProducts();
     productsData = res.data.products;
-    console.table(productsData);
     renderProducts(productsData);
   } catch (err) {
     console.error(err?.response?.data?.message);
