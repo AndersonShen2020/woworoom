@@ -7,6 +7,7 @@ const deleteAllOrders = document.querySelector("#deleteAllOrders");
 const orderCategory = document.querySelector("#orderCategory");
 const orderTitle = document.querySelector("#orderTitle");
 const orderChartTitle = document.querySelector(".section-title");
+const chart = document.querySelector("#chart");
 
 orderCategory.addEventListener("click", (e) => getOrders("category"));
 orderTitle.addEventListener("click", (e) => getOrders("title"));
@@ -14,6 +15,7 @@ orderTitle.addEventListener("click", (e) => getOrders("title"));
 // 訂單 - 獲取訂單
 async function getOrders(state = "title") {
   try {
+    isLoading(true);
     let res = await api._getOrders();
     let orders = res.data.orders;
     renderOrdersList(orders);
@@ -25,6 +27,7 @@ async function getOrders(state = "title") {
       orderChartTitle.innerText = "全產品類別營收比重";
       orderSortWithCategory(orders);
     }
+    isLoading(false);
   } catch (err) {
     console.error(err);
   }
@@ -113,9 +116,8 @@ async function changeOrderState(orderId, state) {
 // 表格操作 - 刪除單筆
 async function deleteOrder(orderId) {
   try {
-    let res = await api._deleteOrder(orderId);
-    let orders = res.data.orders;
-    renderOrdersList(orders);
+    await api._deleteOrder(orderId);
+    getOrders();
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
@@ -127,9 +129,7 @@ deleteAllOrders.addEventListener("click", (e) => {
   api
     ._deleteOrders()
     .then((res) => {
-      let orders = res.data.orders;
-      renderOrdersList(orders);
-      orderSortWithTitle(orders);
+      getOrders();
     })
     .catch((err) => {
       console.error(err);
@@ -160,10 +160,9 @@ function orderSortWithCategory(orders) {
     Object.keys(temp).forEach((key) => {
       c3Data.push([key, temp[key]]);
     });
-
-    // 資料送去渲染
-    chartGenerate(c3Data);
   }
+  // 資料送去渲染
+  chartGenerate(c3Data);
 }
 
 // 全品項營收比重 - 篩選出前三名營收品項，其他 4~8 名都統整為「其它」
@@ -204,15 +203,15 @@ function orderSortWithTitle(orders) {
       c3Data = c3Data.slice(0, 3);
       c3Data.push(newData);
     }
-
-    // 資料送去渲染
-    chartGenerate(c3Data);
   }
+  // 資料送去渲染
+  chartGenerate(c3Data);
 }
 
 // C3 渲染
 function chartGenerate(c3Data) {
-  if (c3Data) {
+  if (c3Data.length) {
+    chart.classList.remove("d-none");
     c3.generate({
       bindto: "#chart", // HTML 元素綁定
       data: {
@@ -223,6 +222,8 @@ function chartGenerate(c3Data) {
         pattern: ["#DACBFF", "#9D7FEA", "#5434A7", "#301E5F"],
       },
     });
+  } else {
+    chart.classList.add("d-none");
   }
 }
 
