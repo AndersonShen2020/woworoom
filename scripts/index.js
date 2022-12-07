@@ -141,8 +141,6 @@ async function addCarts(productId, productNum = 1) {
   try {
     let result = await api._addCart(data);
     cartsData = result.data;
-    // console.table(cartsData);
-    console.log(cartsData);
     renderCarts();
   } catch (err) {
     console.error(err);
@@ -154,8 +152,6 @@ async function getCarts() {
   try {
     let { data } = await api._getCarts();
     cartsData = data;
-    // console.table(cartsData);
-    console.log(cartsData);
     renderCarts();
   } catch (err) {
     console.error(err?.response?.data?.message);
@@ -164,8 +160,6 @@ async function getCarts() {
 
 // 購物車 - 渲染購物車列表
 function renderCarts() {
-  isLoading(true);
-
   let result = ``;
   cartsData.carts.forEach((item) => {
     result += `<tr data-title="${item.product.title}">
@@ -202,12 +196,11 @@ function renderCarts() {
       deleteCart(e);
     });
   });
-
-  isLoading(false);
 }
 
 // 購物車 - 修改數量
 async function patchCarts(e) {
+  isLoading(true);
   e.preventDefault();
   const title = e.target.closest("tr").dataset.title;
   const num = parseInt(e.target.value);
@@ -225,7 +218,6 @@ async function patchCarts(e) {
       quantity: num,
     },
   };
-  console.log(data);
   try {
     let result = await api._patchCart(data);
     cartsData = result.data;
@@ -233,10 +225,12 @@ async function patchCarts(e) {
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
+  isLoading(false);
 }
 
 // 購物車 - 單筆刪除
 async function deleteCart(e) {
+  isLoading(true);
   const title = e.target.closest("tr").dataset.title;
   let id = "";
 
@@ -253,10 +247,12 @@ async function deleteCart(e) {
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
+  isLoading(false);
 }
 
 // 購物車 - 清空購物車
 deleteCartsBtn.addEventListener("click", async (e) => {
+  isLoading(true);
   e.preventDefault();
   try {
     let result = await api._deleteAllCart();
@@ -265,6 +261,7 @@ deleteCartsBtn.addEventListener("click", async (e) => {
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
+  isLoading(false);
 });
 
 // 表單 - 驗證功能
@@ -311,6 +308,7 @@ function formCheck(e) {
 
 // 表單 - 送出購買訂單
 async function sendOrder() {
+  isLoading(true);
   // 要送出去的訂單資料
   const data = {
     data: {
@@ -334,6 +332,7 @@ async function sendOrder() {
   } catch (err) {
     console.error(err?.response?.data?.message);
   }
+  isLoading(false);
 }
 
 // 初始化
